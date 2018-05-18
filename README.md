@@ -1,10 +1,10 @@
-# Forbidden Configurations
-
 **WARNING**: This is really old, ugly, pre-C++11 code that I had in my computer, but maybe it's useful for somebody. What can I say, this was my first time programming.
+
+# Forbidden Configurations
 
 This is the forbidden configurations program. This program can:
 - Compare two configurations to see if one is contained in the other
-- Find what is missing if a family of configurations is avoided
+- Find "what is missing" if a family of configurations is avoided
 - Find what asymptotic bound the conjecture predicts for a configuration (i.e. find X(F))
 - Find all boundary cases
 - Find forb(m,F) exactly for m <= 5
