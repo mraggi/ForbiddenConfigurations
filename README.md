@@ -39,3 +39,5 @@ Families of configurations are stored in text files. Many examples are in the di
 ```
 
 Note that you can put [, or ] or spaces or any other letters and numbers that aren't 0's or 1's and it doesn't make any difference to the program. Just don't use `m` in the middle of a configuration. Hard to explain why (I'm a terrible programmer), but don't use it. Just write configurations in a normal common-sense way.
+
+BAH
