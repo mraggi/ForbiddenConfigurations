@@ -287,10 +287,9 @@ inline list<VSUI> TwoColumns(suint m, suint mincolsum = 0, suint maxcolsum = 0)
             }
         }
     }
-    list<VSUI>::iterator it;
-    for (it = toReturn.begin(); it != toReturn.end(); ++it)
+    for (auto F : toReturn)
     {
-        cout << "f = " << *it << endl;
+        cout << "F = " << F << endl;
     }
     return toReturn;
 }
