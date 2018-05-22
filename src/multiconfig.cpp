@@ -283,18 +283,14 @@ list<Config> EnterListOfConfigs()
          << "Please write the filename (write \"none\" to enter the matrix): ";
     cin >> filename;
 
-    if (filename != string("none"))
+    
+    if (filename == "none")
     {
-        myList = ReadFromFile(filename);
-
-        assert(!myList.empty() && "FATAL ERROR WHILE LOADING FILE: EXITING");
-    }
-    else
-    {
-        int numMatrices = 0;
+        cout << "Entering matrices by hand!" << endl;
+        int numMatrices = -1;
         while ((numMatrices > 20) || (numMatrices < 0))
         {
-            cout << "Then how many matrices would you like to enter?  ";
+            cout << "Then how many matrices would you like to enter? ";
             cin >> numMatrices;
         }
 
@@ -305,6 +301,14 @@ list<Config> EnterListOfConfigs()
             myList.push_back(A);
         }
     }
+    else
+    {
+        cout << "Reading from file: " << filename << endl;
+        myList = ReadFromFile(filename);
+
+        assert(!myList.empty() && "FATAL ERROR WHILE LOADING FILE: EXITING");
+    }
+    
     cout << "***************************" << endl;
     cout << "* These are the matrices: *" << endl;
     cout << "***************************" << endl;

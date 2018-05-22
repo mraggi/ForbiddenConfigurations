@@ -50,8 +50,8 @@ int main()
     try
     {
         cout << "Welcome to the Forbidden Configuration Program." << endl;
-        cout << endl << "PLEASE WAIT... Loading... " << endl;
-        cout << "Finished Loading! Choose your option: ";
+        cout << endl << "PLEASE WAIT... Loading... " << flush;
+        cout << "finished loading! Choose your option: \n";
             
         Initialize();
         
