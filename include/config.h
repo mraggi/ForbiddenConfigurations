@@ -130,7 +130,7 @@ inline Column ToColumn(const VB& G)
     Column col = 0;
     for (suint i = 0; i < G.size(); ++i)
     {
-        col += static_cast<int>(G[i])*(1 << i);
+        col += static_cast<Column>(G[i])*(1 << i);
     }
     return col;
 }
@@ -151,12 +151,16 @@ inline BColumn ToBinary(Column a) { return Config::m_Binary[a]; }
 
 inline VB ToBinaryVB(Column a)
 {
-    VB hello(MAX_NUM_COLS, 0);
+    VB hello(MAX_NUM_COLS, false);
+//     cout << "toBinaryVB" << endl;
     BColumn bla = ToBinary(a);
+//     cout << "bla = " << bla << endl;
     for (suint i = 0; i < MAX_NUM_COLS; ++i)
     {
+//         cout << "i = " << i << endl;
         hello[i] = bla[i];
     }
+//     cout << "Done with ToBinaryVB" << endl;
     return hello;
 }
 

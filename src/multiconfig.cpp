@@ -148,8 +148,8 @@ WhatIsMissing(vector<Config> L, suint n, const Config& CustomComplete)
 
     while (NextMultiset(Complete, Sub))
     {
-        // cout << endl << "========================================" << endl;
-        // cout << "STARTING NUMTIMES = " << numtimes << endl;
+//         cout << endl << "========================================" << endl;
+//         cout << "STARTING NUMTIMES = " << numtimes << endl;
         if (numtimes%50000 == 0)
         {
             cout << double(100.0*numtimes)/totaltimes << "% complete!";
@@ -158,19 +158,19 @@ WhatIsMissing(vector<Config> L, suint n, const Config& CustomComplete)
         ++numtimes;
         /// We are assuming we are at a new case.
         Config Present(Sub);
-        // cout << numtimes << ": Sub =  " << Sub << endl;
-        // cout << numtimes << ": Present =  " << Present << endl;
+//         cout << numtimes << ": Sub =  " << Sub << endl;
+//         cout << numtimes << ": Present =  " << Present << endl;
 
         bool PresentContainsSomeoneInList = false;
         for (const auto& l : L)
         {
-            // cout << "l = " << suint(l) << endl;
+//             cout << "l = " << l << endl;
             if (l <= Present)
             {
-                // cout << "finished comparing" << endl;
+//                 cout << "finished comparing" << endl;
                 PresentContainsSomeoneInList = true;
 
-                // cout << numtimes << ": L[l] =  " << L[l] << endl;
+//                 cout << numtimes << ": l =  " << l << endl;
 
                 break;
             }
@@ -179,11 +179,11 @@ WhatIsMissing(vector<Config> L, suint n, const Config& CustomComplete)
         if (PresentContainsSomeoneInList)
             continue;
 
-        // cout << "Right before missing!" << endl;
+//         cout << "Right before missing!" << endl;
 
         Config Missing = Complete - Present;
 
-        // cout << numtimes << ": Missing  " << Missing << endl;
+//         cout << numtimes << ": Missing  " << Missing << endl;
 
         bool MissingContainsSomeoneInWim = false;
         // Test if someone in WIM is contained in Missing. If so, there's no
@@ -220,7 +220,7 @@ WhatIsMissing(vector<Config> L, suint n, const Config& CustomComplete)
 
     } // while next multiset
 
-    cout << "FINISHED with WIM baby, YEAH" << endl;
+    cout << "\n\nFINISHED with WIM baby, YEAH" << endl;
     cout << "WIM of size = " << wim.size() << endl;
 
     PrintAsWIM(wim);
@@ -278,21 +278,21 @@ list<Config> EnterListOfConfigs()
 {
     list<Config> myList;
 
-    char filename[255] = "none";
+    string filename = "none";
     cout << endl
          << "Please write the filename (write \"none\" to enter the matrix): ";
     cin >> filename;
 
     if (filename != string("none"))
     {
-        myList = ReadFromFile(string(filename));
+        myList = ReadFromFile(filename);
 
         assert(!myList.empty() && "FATAL ERROR WHILE LOADING FILE: EXITING");
     }
     else
     {
         int numMatrices = 0;
-        while ((numMatrices > 20) || (numMatrices == 0))
+        while ((numMatrices > 20) || (numMatrices < 0))
         {
             cout << "Then how many matrices would you like to enter?  ";
             cin >> numMatrices;

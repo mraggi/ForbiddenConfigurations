@@ -39,7 +39,7 @@ VB operator|(const VB& A, const VB& B)
     return G;
 }
 
-vector<VB> Transposed(vector<VB> Table)
+vector<VB> Transposed(const vector<VB>& Table)
 {
     nuint numrows = Table.size();
     nuint numcols = Table[0].size();

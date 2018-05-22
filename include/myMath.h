@@ -54,7 +54,7 @@ VB operator|(const VB& A, const VB& B);
 
 VUC max(const VUC& lhs, const VUC& rhs);
 
-vector<VB> Transposed(vector<VB> Table);
+vector<VB> Transposed(const vector<VB>& Table);
 
 bool operator<(const VB& A, const VB& B);
 

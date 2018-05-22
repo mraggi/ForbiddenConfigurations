@@ -35,9 +35,7 @@ Config::Config(const vector<VB>& G)
 }
 
 Config::Config(const vector<uchar>& colset)
-    : m_iNumrows(log2(colset.size()))
-    , m_Colset(colset)
-    , m_bNeedsUpdate(true)
+    : m_iNumrows(log2(colset.size())), m_Colset(colset), m_bNeedsUpdate(true)
 {}
 
 void Config::BakeColumnSums()
@@ -50,55 +48,52 @@ void Config::BakeColumnSums()
 
 list<Config> ReadFromFile(string filename)
 {
-    ifstream myFile(filename.c_str());
     list<Config> vcread;
+    
+    ifstream myFile(filename);
+
     if (!myFile)
     {
-        filename = "Configs/" + filename;
-        myFile.open(filename.c_str());
+        filename = "Configs/"s + filename;
+        myFile.open(filename);
         if (!myFile)
         {
             cout << "File not found!" << endl;
             return vcread;
         }
     }
+    
     cout << "Reading file... " << endl;
-    char line[255];
+    string line;
 
-    while (myFile)
+    vector<VB> Table;
+    while (getline(myFile, line))
     {
-        vector<VB> Table;
-        suint row = 0;
-        while (true)
+        VB Row;
+        
+        for (auto c : line)
         {
-            VB Row;
-            for (char& i : line)
-                i = 'm';
-            myFile.getline(line, 255);
-
-            if (line[1] == 'm')
-            {
-                break;
-            }
-
-            for (char i : line)
-            {
-                if (i == '0')
-                    Row.push_back(0);
-                else if (i == '1')
-                    Row.push_back(1);
-            }
-            Table.push_back(Row);
-
-            cout << line << endl;
-
-            ++row;
+            char t = c - '0';
+            if (t == 0 || t == 1)
+                Row.push_back(t);
         }
-        cout << "----------" << endl;
-        Config A(Transposed(Table));
-        vcread.push_back(A);
+        
+        if (Row.empty())
+        {
+            if (!Table.empty())
+                vcread.emplace_back(Transposed(Table));
+            Table.clear();
+        } else
+        {
+            Table.emplace_back(Row);
+        }
     }
-
+    
+    if (!Table.empty())
+    {
+        vcread.emplace_back(Transposed(Table));
+    }
+    
     cout << "File succesfully read!" << endl;
     myFile.close();
     return vcread;
@@ -156,11 +151,15 @@ Column ColumnFromRows(Column col, const vector<uchar>& G)
 Column ColumnFromRows(Column col, const VB& G)
 {
     VB original = ToBinaryVB(col);
-    VB toReturn(SumVB(G), 0);
+    VB toReturn(G.size(), 0);
     uchar suma = 0;
     suint m = G.size();
+    
+//     cout << "original,toreturn = " << original << ", " << toReturn << endl;
+    
     for (suint i = 0; i < m; ++i)
     {
+//         cout << "In ColumnFromRows: " << i << endl;
         toReturn[suma] = original[i];
         if (G[i])
             ++suma;
@@ -178,23 +177,35 @@ Column ColumnFromRows(Column col, suint subset)
 
     if (!filled)
     {
+//         cout << "Columns not filled! Filling" << endl;
         for (Column c = 0; c < TWO_POWER; ++c)
         {
             for (suint ss = 0; ss < TWO_POWER; ++ss)
             {
-                table[c][ss] = ColumnFromRows(c, ToBinaryVB(ss));
+//                 cout << "c,ss = " << c << "," << ss << endl;
+                
+                auto TBVB = ToBinaryVB(ss);
+//                 cout << "ToBinaryVB(s) = " << TBVB << endl;
+                
+                auto CFR =  ColumnFromRows(c, TBVB);
+                
+//                 cout << "ColumnFromRows(c,bla) = " << CFR << endl;
+                table[c][ss] = CFR;
+//                 cout << "Done setting table" << endl;
             }
         }
         filled = true;
+//         cout << "Filled!" << endl;
     }
-
+    
+//     cout << "Yep, already filled!" << endl;
     return table[col][subset];
 }
 
 VSUI subsetsI(suint n, suint r)
 {
     static bool filled = false;
-    static vector<VSUI> table(MAX_NUM_COLS + 1, VSUI());
+    static vector<VSUI> table(MAX_NUM_COLS + 1);
 
     if (!filled)
     {
@@ -206,9 +217,7 @@ VSUI subsetsI(suint n, suint r)
         filled = true;
     }
 
-    VSUI toReturn;
-    toReturn.insert(
-      toReturn.end(), table[r].begin(), table[r].begin() + Binomial(n, r));
+    VSUI toReturn(table[r].begin(), table[r].begin() + Binomial(n, r));
     return toReturn;
 }
 
@@ -247,8 +256,14 @@ Config Config::ConfigFromRows(suint subset) const
 
     for (Column col = 0; col < AllColumns(); ++col)
     {
+//         cout << "col = " << col << " and subset = " << subset << ", m_Colset.size() = " << m_Colset.size() << endl;
         if (m_Colset[col] > 0)
-            toReturn[ColumnFromRows(col, subset)] += m_Colset[col];
+        {
+//             cout << "Before ColumnFromRows of " << col << " " << subset << endl;
+            auto t = ColumnFromRows(col, subset);
+//             cout << "\t and t = " << t << endl;
+            toReturn[t] += m_Colset[col];
+        }
     }
 
     return toReturn;
@@ -706,16 +721,15 @@ bool operator<=(const Config& lhs, const Config& rhs)
         return false;
     if (lhs.NumColumns() > rhs.NumColumns())
         return false;
-    //    if (lhs.NumOnes() > rhs.NumOnes()) return false;
-
+//     if (lhs.NumOnes() > rhs.NumOnes()) return false;
     VSUI subListI = subsetsI(rhs.NumRows(), lhs.NumRows());
-    for (unsigned short i : subListI)
-    {
-        Config B = rhs.ConfigFromRows(i);
 
-        for (const auto& i : lhs.EquivalenceClass())
+    for (auto s : subListI)
+    {
+        Config B = rhs.ConfigFromRows(s);
+        for (const auto& e : lhs.EquivalenceClass())
         {
-            if (i <= VUC(B))
+            if (e <= VUC(B))
             {
                 return true;
             }

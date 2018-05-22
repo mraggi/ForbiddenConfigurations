@@ -2,25 +2,64 @@
  *Title: Fobidden Configurations
  *Author: Miguel Raggi
  *Contact: mraggi@gmail.com
- *License: GPL v3
+ *License: MIT
  */
 #include "helpers.h"
 #include <iostream>
 
-int main()
+void Initialize()
 {
+    subsetsI(0,0);
+    ColumnFromRows(0,0);
+}
+
+void SafeRead(int& x)
+{
+    string s;
+    if (!(cin >> s) || (s.empty()))
+    {
+        x = 8;
+        return;
+    }
     try
     {
-        Config K2 = Config::K(2);
-        Config K1 = Config::K(1);
-        Config K3 = K2*K1;
+        x = stoi(s);
+    } catch(...)
+    {
+        x = -1;
+        cerr << "Invalid option! Please choose a number between 0 and 8" << endl;
+    }
+}
 
+int main()
+{
+//     Initialize();
+//     auto F = ConvertToVector(ReadFromFile("F8"));
+//     int numRows = 0;
+// 
+//     for (auto& i : F)
+//     {
+//         if (numRows < i.NumRows())
+//             numRows = i.NumRows();
+//     }
+//     
+//     WhatIsMissing(F,numRows);
+//     
+//     return 0;
+    
+    try
+    {
+        cout << "Welcome to the Forbidden Configuration Program." << endl;
+        cout << endl << "PLEASE WAIT... Loading... " << endl;
+        cout << "Finished Loading! Choose your option: ";
+            
+        Initialize();
+        
         srand(std::time(nullptr));
         int option = -1;
 
-        while (option > 8 || option < 0)
+        do
         {
-            cout << "Welcome to the Forbidden Configuration Program." << endl;
             cout << "0: What is Missing" << endl;
             cout << "1: What the conjecture predicts" << endl;
             cout << "2: Find Forb (Local)" << endl;
@@ -31,12 +70,19 @@ int main()
             cout << "7: Other " << endl;
             cout << "8: Exit " << endl;
 
-            cout << endl << "PLEASE WAIT... Loading... " << endl;
-            K2 <= K3;
-            cout << "Finished Loading! Choose your option: ";
-
-            cin >> option;
-        }
+            cout << "Please choose an option: ";
+            SafeRead(option);
+            if (option == 8)
+            {
+                std::cout << "Goodbye!" << std::endl;
+                return 0;
+            }
+            if (option > 8 || option < 0)
+            {
+                cout << "\nINVALID OPTION!! Please choose a number between 0 and 8\n\n" << endl;
+            }
+        } while (option > 8 || option < 0);
+        
         vector<Config> ForbConf;
         while (ForbConf.empty() && option != 5)
         {
@@ -80,6 +126,7 @@ int main()
         else if (option == 7)
         {
             cout << "There is no other right now! Goodbye!" << endl;
+            option = 8;
             // ExecuteOther(ForbConf);
         }
         else
